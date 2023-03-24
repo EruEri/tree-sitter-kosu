@@ -1,0 +1,15 @@
+{
+  "name": "tree-sitter-kosu",
+  "version": "0.1.0",
+  "description": "Kosu grammar for tree-sitter",
+  "main": "bindings/node",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tree-sitter",
+    "kosu"
+  ],
+  "author": "EruEri",
+  "license": "MIT"
+}
