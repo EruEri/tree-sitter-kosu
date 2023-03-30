@@ -1,4 +1,1 @@
-enum option(t) {
-    none,
-    some(t)
-}
+external printf(_: stringl) s32 = "printf"

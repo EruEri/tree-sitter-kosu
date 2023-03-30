@@ -1,6 +1,9 @@
 module.exports = grammar({
   name: 'Kosu',
 
+  externals: $ => [
+    $.stringl
+  ],
   inline: $ => [
   ],
   rules: {
@@ -14,7 +17,7 @@ module.exports = grammar({
     module_nodes: $ => choice(
       field('enum_decl', $.enum_decl),
       field('struct_decl', $.struct_decl),
-      $.external_func_decl,
+      field('external_fn_decl', $.external_func_decl),
       $.operator_decl,
       $.syscall_decl,
       $.function_decl,
@@ -25,12 +28,12 @@ module.exports = grammar({
       field('name', $.identifier),
       optional(
         field(
-          'parametric_type', 
+          'parametric_type',
           delimited('(', non_empty_separated_rule(',', $.identifier), ')')
-        ) 
+        )
       ),
       delimited('{', separated_rule(',', field('enum_cases', $.enum_assoc)), '}')
-      
+
     ),
     struct_decl: $ => seq(
       'struct',
@@ -39,7 +42,7 @@ module.exports = grammar({
         delimited('(', non_empty_separated_rule(',', $.identifier), ')')
       ),
       delimited(
-        '{', 
+        '{',
         non_empty_separated_rule(
           ',', field(
             'field',
@@ -49,11 +52,53 @@ module.exports = grammar({
               $.ktype
             )
           )
-        ), 
+        ),
         '}'
       )
     ),
-    external_func_decl: $ => "external",
+    external_func_decl: $ => seq(
+      'external',
+      field('external_fn_name', $.identifier),
+      delimited(
+        '(',
+        seq(
+          separated_rule(
+            ',',
+            field(
+              'args',
+              $.external_fn_arg
+            )
+          ),
+          optional(
+            preceded( '=',
+              field(
+                'variadic',
+                '...'
+              )
+            )
+          )
+          ),
+        ')'
+      ),
+      optional(
+        field(
+          'return_type',
+          $.ctype
+        )
+      ),
+      optional(
+        preceded(
+          '=',
+          field(
+            'c_name',
+            seq(
+              "\"",
+              $.stringl
+            )
+          )
+        )
+      )
+    ),
     operator_decl: $ => "operator",
     syscall_decl: $ => "syscall",
     function_decl: $ => "fn",
@@ -69,16 +114,16 @@ module.exports = grammar({
           field(
             'assoc_type',
             non_empty_separated_rule(',', $.ktype)
-            ),
+          ),
           ')'
         )
       )
     ),
     ktype: $ => choice(
       seq(
-        module_path($), 
+        module_path($),
         $.identifier
-        ),
+      ),
       field('pointer', seq("*", $.ktype)),
       seq(
         module_path($),
@@ -86,19 +131,34 @@ module.exports = grammar({
         delimited('(', non_empty_separated_rule(',', $.ktype), ')')
       )
     ),
+    ctype: $ => choice(
+      seq(
+        module_path($),
+        $.identifier
+      ),
+      field('pointer', seq("*", $.ktype)),
+    ),
+    external_fn_arg: $ => seq(
+      choice(
+        '_',
+        $.identifier
+      ),
+      ':',
+      $.ctype
+    ),
     generic_list: $ => non_empty_separated_rule(",", $.identifier),
     module_identifier: $ => /[A-Z][A-Z | a-z | 0-9 | _]*/,
-    identifier: $ => /[a-z|_][a-z|_|A-Z|0-9]*/
+    identifier: $ => /[a-z|_][a-z|_|A-Z|0-9]*/,
   }
 });
 
 function module_path($) {
-  return field( 
+  return field(
     'module_path',
     optional(
       terminated(
-      non_empty_separated_rule('::', $.module_identifier),
-      '.'
+        non_empty_separated_rule('::', $.module_identifier),
+        '.'
       )
     )
   )
@@ -114,6 +174,10 @@ function separated_rule(sep, rule) {
 
 function terminated(rule, by) {
   return seq(rule, by)
+}
+
+function preceded(by, rule) {
+  return seq(by, rule)
 }
 
 function non_empty_separated_rule(sep, rule) {

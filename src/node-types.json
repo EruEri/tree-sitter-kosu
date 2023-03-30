@@ -1,5 +1,53 @@
 [
   {
+    "type": "ctype",
+    "named": true,
+    "fields": {
+      "module_path": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          },
+          {
+            "type": "::",
+            "named": false
+          },
+          {
+            "type": "module_identifier",
+            "named": true
+          }
+        ]
+      },
+      "pointer": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "*",
+            "named": false
+          },
+          {
+            "type": "ktype",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "enum_assoc",
     "named": true,
     "fields": {
@@ -78,6 +126,85 @@
     }
   },
   {
+    "type": "external_fn_arg",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "ctype",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "external_func_decl",
+    "named": true,
+    "fields": {
+      "args": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "external_fn_arg",
+            "named": true
+          }
+        ]
+      },
+      "c_name": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "\"",
+            "named": false
+          },
+          {
+            "type": "stringl",
+            "named": true
+          }
+        ]
+      },
+      "external_fn_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "return_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "ctype",
+            "named": true
+          }
+        ]
+      },
+      "variadic": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "...",
+            "named": false
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "ktype",
     "named": true,
     "fields": {
@@ -143,6 +270,16 @@
           }
         ]
       },
+      "external_fn_decl": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "external_func_decl",
+            "named": true
+          }
+        ]
+      },
       "struct_decl": {
         "multiple": false,
         "required": false,
@@ -160,10 +297,6 @@
       "types": [
         {
           "type": "const_decl",
-          "named": true
-        },
-        {
-          "type": "external_func_decl",
           "named": true
         },
         {
@@ -242,6 +375,10 @@
     }
   },
   {
+    "type": "\"",
+    "named": false
+  },
+  {
     "type": "(",
     "named": false
   },
@@ -262,11 +399,23 @@
     "named": false
   },
   {
+    "type": "...",
+    "named": false
+  },
+  {
     "type": ":",
     "named": false
   },
   {
     "type": "::",
+    "named": false
+  },
+  {
+    "type": "=",
+    "named": false
+  },
+  {
+    "type": "_",
     "named": false
   },
   {
@@ -278,8 +427,8 @@
     "named": false
   },
   {
-    "type": "external_func_decl",
-    "named": true
+    "type": "external",
+    "named": false
   },
   {
     "type": "function_decl",
@@ -295,6 +444,10 @@
   },
   {
     "type": "operator_decl",
+    "named": true
+  },
+  {
+    "type": "stringl",
     "named": true
   },
   {
