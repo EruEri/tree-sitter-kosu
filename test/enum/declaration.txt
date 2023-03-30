@@ -1,0 +1,12 @@
+==================
+enum declaration
+==================
+
+enum direction {
+    nord,
+    sud,
+    east,
+    west
+}
+
+---

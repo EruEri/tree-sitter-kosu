@@ -1,0 +1,6 @@
+enum direction {
+    nord,
+    sud,
+    east,
+    west
+}

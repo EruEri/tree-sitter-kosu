@@ -1,8 +1,9 @@
-module.exports = grammar ({
+module.exports = grammar({
   name: 'Kosu',
 
   rules: {
     source_file: $ => repeat($.module_nodes),
+    word: $ => 'enum',
     module_nodes: $ => choice(
       $.enum_decl,
       $.struct_decl,
@@ -14,22 +15,12 @@ module.exports = grammar ({
     ),
     enum_decl: $ => seq(
       'enum',
-      $.identifier,
+      field('name', $.identifier),
       optional(
-        seq(
-          "(",
-          $.generic_list,
-          ")"
-        )
+        delimited('(', non_empty_separated_rule(',', $.identifier), ')')
       ),
-      "{",
-      repeat(
-        seq(
-          $.enum_assoc,
-          ","
-        )
-      ),
-      "}"
+      delimited('{', separated_rule(',', $.enum_assoc), '}')
+      
     ),
     struct_decl: $ => "struct",
     external_func_decl: $ => "external",
@@ -40,41 +31,43 @@ module.exports = grammar ({
     enum_assoc: $ => seq(
       $.identifier,
       optional(
-        seq(
-          "(",
-          repeat1(
-            seq(
-              $.ktype,
-              optional(
-                ","
-              )
-            )
-          )
+        delimited(
+          '(',
+          separated_rule(',', $.ktype),
+          ')'
         )
       )
-    ), 
+    ),
     ktype: $ => choice(
       seq($.module_path, $.identifier),
       seq("*", $.ktype),
       seq(
         $.module_path,
-         $.identifier, 
-         "(", 
-         repeat1(
+        $.identifier,
+        "(",
+        repeat1(
           seq(
             $.ktype,
             ","
           )
-         ),
-         ")"
+        ),
+        ")"
       )
     ),
-    generic_list: $ => repeat1(
-      seq(
-        $.identifier, optional( "," )
-      )
-    ),
+    generic_list: $ => non_empty_separated_rule(",", $.identifier),
     module_path: $ => /[A-Z][A-Z | a-z | 0-9 | _]*/,
     identifier: $ => /[a-z|_][a-z|_|A-Z|0-9]*/
-  } 
+  }
 });
+
+function delimited(lhs, rule, rhs) {
+  return seq(lhs, rule, rhs)
+}
+
+function separated_rule(sep, rule) {
+  return optional(non_empty_separated_rule(sep, rule))
+}
+
+function non_empty_separated_rule(sep, rule) {
+  return seq(rule, repeat(seq(sep, rule)))
+}
