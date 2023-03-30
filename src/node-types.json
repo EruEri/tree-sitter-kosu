@@ -2,10 +2,121 @@
   {
     "type": "enum_assoc",
     "named": true,
-    "fields": {},
+    "fields": {
+      "assoc_type": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "ktype",
+            "named": true
+          }
+        ]
+      },
+      "enum_case_decl": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "enum_decl",
+    "named": true,
+    "fields": {
+      "enum_cases": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "enum_assoc",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "parametric_type": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "ktype",
+    "named": true,
+    "fields": {
+      "module_path": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          },
+          {
+            "type": "::",
+            "named": false
+          },
+          {
+            "type": "module_identifier",
+            "named": true
+          }
+        ]
+      },
+      "pointer": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "*",
+            "named": false
+          },
+          {
+            "type": "ktype",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "identifier",
@@ -19,9 +130,95 @@
     }
   },
   {
-    "type": "enum_decl",
+    "type": "module_nodes",
     "named": true,
     "fields": {
+      "enum_decl": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "enum_decl",
+            "named": true
+          }
+        ]
+      },
+      "struct_decl": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "struct_decl",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "const_decl",
+          "named": true
+        },
+        {
+          "type": "external_func_decl",
+          "named": true
+        },
+        {
+          "type": "function_decl",
+          "named": true
+        },
+        {
+          "type": "operator_decl",
+          "named": true
+        },
+        {
+          "type": "syscall_decl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "source_file",
+    "named": true,
+    "fields": {
+      "node_decl": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "module_nodes",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "struct_decl",
+    "named": true,
+    "fields": {
+      "field": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "ktype",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
@@ -38,88 +235,7 @@
       "required": false,
       "types": [
         {
-          "type": "enum_assoc",
-          "named": true
-        },
-        {
           "type": "identifier",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "ktype",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "ktype",
-          "named": true
-        },
-        {
-          "type": "module_path",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "module_nodes",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "const_decl",
-          "named": true
-        },
-        {
-          "type": "enum_decl",
-          "named": true
-        },
-        {
-          "type": "external_func_decl",
-          "named": true
-        },
-        {
-          "type": "function_decl",
-          "named": true
-        },
-        {
-          "type": "operator_decl",
-          "named": true
-        },
-        {
-          "type": "struct_decl",
-          "named": true
-        },
-        {
-          "type": "syscall_decl",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "source_file",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "module_nodes",
           "named": true
         }
       ]
@@ -139,6 +255,18 @@
   },
   {
     "type": ",",
+    "named": false
+  },
+  {
+    "type": ".",
+    "named": false
+  },
+  {
+    "type": ":",
+    "named": false
+  },
+  {
+    "type": "::",
     "named": false
   },
   {
@@ -162,7 +290,7 @@
     "named": true
   },
   {
-    "type": "module_path",
+    "type": "module_identifier",
     "named": true
   },
   {
@@ -170,8 +298,8 @@
     "named": true
   },
   {
-    "type": "struct_decl",
-    "named": true
+    "type": "struct",
+    "named": false
   },
   {
     "type": "syscall_decl",

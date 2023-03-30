@@ -1,6 +1,4 @@
-enum direction {
-    nord,
-    sud,
-    east,
-    west
+enum option(t) {
+    none,
+    some(t)
 }
