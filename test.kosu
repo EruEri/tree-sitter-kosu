@@ -1,21 +1,5 @@
-external printf(_: stringl) s32 = "printf"
-
-syscall read(fd: s32, data: anyptr, size: u64) s64 = 0x01;
-
-const PI = 3.14;
-
-struct coordinate {
-    x: f64,
-    y: f64
-}
-
-fn test() s32 { 
-    discard cases {
-        of 1 == 1 => { $ 10 }
-        else { $ 30 } 
-    };
-    $ switch (expr) {
-        .some(x) => { $ x }
-        .none => { $ 10 }
-    }
+fn main() s32 {
+    const d = coordinate { x = 3.14, y = 7.87 };
+    discard d |> show_coordinate();
+    $ 0
 }

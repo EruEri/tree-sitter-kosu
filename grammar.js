@@ -392,7 +392,7 @@ module.exports = grammar({
       prec.left(PREC.infeq, seq($.expression, token('<='), $.expression)),
       prec.left(PREC.doubleequal, seq($.expression, token('=='), $.expression)),
       prec.left(PREC.diff, seq($.expression, token('!='), $.expression)),
-      prec.left(PREC.pipesup, seq($.expression, token('|>', $.function_call)))
+      prec.left(PREC.pipesup, seq($.expression, token('|>'), $.function_call))
     ),
     builin_function_expr: $ => seq(
       field('name', preceded('@', $.identifier)),
@@ -430,11 +430,15 @@ module.exports = grammar({
       module_path($),
       field('struct_name', $.identifier),
       bracked_rule(
-        separated_rule(
-          ',',
-          $.identifier,
-          choice('=', ':'),
-          $.expression
+        non_empty_rule(
+          non_empty_separated_rule(
+            ',',
+            seq(
+              $.identifier,
+              choice('=', ':'),
+              $.expression
+            )
+          )
         )
       )
     ),
