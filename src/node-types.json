@@ -285,6 +285,16 @@
             "named": true
           }
         ]
+      },
+      "syscall_decl": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "syscall_decl",
+            "named": true
+          }
+        ]
       }
     },
     "children": {
@@ -301,10 +311,6 @@
         },
         {
           "type": "operator_decl",
-          "named": true
-        },
-        {
-          "type": "syscall_decl",
           "named": true
         }
       ]
@@ -376,6 +382,52 @@
     }
   },
   {
+    "type": "syscall_decl",
+    "named": true,
+    "fields": {
+      "args": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "external_fn_arg",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "opcode": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "integer_literal",
+            "named": true
+          }
+        ]
+      },
+      "return_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "ctype",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "\"",
     "named": false
   },
@@ -412,6 +464,10 @@
     "named": false
   },
   {
+    "type": ";",
+    "named": false
+  },
+  {
     "type": "=",
     "named": false
   },
@@ -440,6 +496,10 @@
     "named": true
   },
   {
+    "type": "integer_literal",
+    "named": true
+  },
+  {
     "type": "module_identifier",
     "named": true
   },
@@ -452,8 +512,8 @@
     "named": false
   },
   {
-    "type": "syscall_decl",
-    "named": true
+    "type": "syscall",
+    "named": false
   },
   {
     "type": "{",
