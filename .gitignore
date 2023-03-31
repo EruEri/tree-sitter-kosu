@@ -1,5 +1,5 @@
 target/
 cargo.lock
-src/grammar.json
-src/node-types.json
-src/parser.c
+# src/grammar.json
+# src/node-types.json
+# src/parser.c
