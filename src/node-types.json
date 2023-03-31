@@ -159,13 +159,9 @@
         ]
       },
       "c_name": {
-        "multiple": true,
+        "multiple": false,
         "required": false,
         "types": [
-          {
-            "type": "\"",
-            "named": false
-          },
           {
             "type": "stringl",
             "named": true
@@ -331,6 +327,11 @@
     }
   },
   {
+    "type": "stringl",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "struct_decl",
     "named": true,
     "fields": {
@@ -444,10 +445,6 @@
   },
   {
     "type": "operator_decl",
-    "named": true
-  },
-  {
-    "type": "stringl",
     "named": true
   },
   {

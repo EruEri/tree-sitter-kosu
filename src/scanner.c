@@ -7,6 +7,9 @@ enum TokenType {
     STRINGL
 };
 
+#define log_current() \
+    printf("pos = %d, c = %c, code : %d\n", lexer->get_column(lexer), lexer->lookahead, lexer->lookahead)
+
 static void advance(TSLexer* lexer) {
     lexer->advance(lexer, false);
 }
@@ -26,26 +29,12 @@ static bool check_char(TSLexer* lexer, char c, bool advance_if_checked) {
 
 static bool parse_stringl(TSLexer* lexer) {
     bool parsed = false;
-    if (is_eof(lexer)) { return false; }
 
-    int32_t head = lexer->lookahead;
-    if (head != '\"') { return false; }
-    
-    while ( !( is_eof(lexer) || parsed ) ) {
-
+    while (true) {
+        if (check_char(lexer, '\"',false)) { break; }
+        else if ( is_eof(lexer) ) { return false; }
+        parsed = true;
         advance(lexer);
-        bool is_escaped = check_char(lexer, '\\', false);
-        if (is_eof(lexer)) { return false; }
-        if (is_escaped) {
-            advance(lexer);
-        } else {
-            bool matched = check_char(lexer, '\"', true);
-            parsed = matched;
-        }
-    }
-
-    if (parsed) {
-        lexer->result_symbol = STRINGL;
     }
     return parsed;
 }

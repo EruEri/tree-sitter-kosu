@@ -2,7 +2,7 @@ module.exports = grammar({
   name: 'Kosu',
 
   externals: $ => [
-    $.stringl
+    $._stringl
   ],
   inline: $ => [
   ],
@@ -92,7 +92,6 @@ module.exports = grammar({
           field(
             'c_name',
             seq(
-              "\"",
               $.stringl
             )
           )
@@ -146,6 +145,7 @@ module.exports = grammar({
       ':',
       $.ctype
     ),
+    stringl: $ => delimited('\"', $._stringl, '\"'),
     generic_list: $ => non_empty_separated_rule(",", $.identifier),
     module_identifier: $ => /[A-Z][A-Z | a-z | 0-9 | _]*/,
     identifier: $ => /[a-z|_][a-z|_|A-Z|0-9]*/,
