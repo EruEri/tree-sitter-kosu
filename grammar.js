@@ -32,6 +32,7 @@ module.exports = grammar({
     $._stringl
   ],
   inline: $ => [
+    $.binop
   ],
   rules: {
     source_file: $ => repeat(
@@ -40,7 +41,7 @@ module.exports = grammar({
         $.module_nodes
       )
     ),
-    word: $ => 'enum',
+    word: $ => $.identifier,
     module_nodes: $ => choice(
       field('enum_decl', $.enum_decl),
       field('struct_decl', $.struct_decl),
@@ -245,18 +246,28 @@ module.exports = grammar({
     deref_affect: $ => preceded('*', $.affected_value),
     affected_value: $ => non_empty_separated_rule('.', $.identifier),
     expression: $ => choice(
-      'true',
+      field('true', 'true'),
       'false',
       'empty',
       'nullptr',
-      $.integer_literal,
+      field('integer_litteral', $.integer_literal),
       $.float_litteral,
       $.stringl,
       $.sizeof,
       $.while,
+      $.unop,
+      $.binop,
+      $.function_call,
+      $.estruct,
+      $.eenum,
+      seq(module_path($), $.identifier),
+      seq(module_path($), $.constant_identifier),
+      field('bultin_function', $.builin_function_expr),
+      seq(
+        prec.left(PREC.dot, seq($.expression, '.', $.identifier))
+      ),
       seq(non_empty_rule('*'), $.identifier),
       preceded('&', $.identifier),
-
     ),
     sizeof: $ => seq(
       'sizeof',
@@ -271,6 +282,89 @@ module.exports = grammar({
       'while',
       parenthesed_rule($.expression),
       $.kbody
+    ),
+    unop: $ => choice(
+      prec.right(PREC.unot, preceded('-', $.expression)),
+      prec.right(PREC.unot, preceded('!', $.expression))
+    ),
+    binop: $ => choice(
+      prec.left(PREC.plus, seq($.expression, token('+'), $.expression) ),
+      prec.left(PREC.minus, seq($.expression, token('-'), $.expression) ),
+      prec.left(PREC.div, seq($.expression, token('/'), $.expression) ),
+      prec.left(PREC.mod, seq($.expression, token('%'), $.expression) ),
+      prec.left(PREC.pipe, seq($.expression, token('|'), $.expression) ),
+      prec.left(PREC.xor, seq($.expression, token('^'), $.expression) ),
+      prec.left(PREC.ampersand, seq($.expression, token('&'), $.expression) ),
+      prec.left(PREC.shiftleft, seq($.expression, token('<<'), $.expression) ),
+      prec.left(PREC.shiftright, seq($.expression, token('>>'), $.expression) ),
+      prec.left(PREC.fullor, seq($.expression, token('or'), $.expression) ),
+      prec.left(PREC.fulland, seq($.expression, token('and'), $.expression) ),
+      prec.left(PREC.and, seq($.expression, token('&&'), $.expression) ),
+      prec.left(PREC.or, seq($.expression, token('||'), $.expression) ),
+      prec.left(PREC.sup, seq($.expression, token('>'), $.expression) ),
+      prec.left(PREC.supeq, seq($.expression, token('>='), $.expression) ),
+      prec.left(PREC.inf, seq($.expression, token('<'), $.expression) ),
+      prec.left(PREC.infeq, seq($.expression, token('<='), $.expression) ),
+      prec.left(PREC.doubleequal, seq($.expression, token('=='), $.expression) ),
+      prec.left(PREC.diff, seq($.expression, token('!='), $.expression) ),
+      prec.left(PREC.pipesup, seq($.expression, token('|>', $.function_call)))
+    ),
+    builin_function_expr: $ => seq(
+      preceded('@', $.identifier),
+      parenthesed_rule(
+        separated_rule(
+          ',',
+          $.expression
+        )
+      )
+    ),
+    function_call: $ => seq(
+      module_path($),
+      field('fn_call_name', $.identifier),
+      optional(
+        preceded(
+          '::',
+          delimited(
+            '<',
+            field(
+              'explicit_generic',
+              non_empty_separated_rule(', ', $.ktype)
+            ),
+            '>'
+          )
+        )
+      ),
+      parenthesed_rule(
+        separated_rule(
+          ',',
+          $.expression
+        )
+      )
+    ),
+    estruct: $ => seq(
+      module_path($),
+      field('struct_name', $.identifier),
+      bracked_rule(
+        separated_rule(
+          ',',
+          $.identifier,
+          choice('=', ':'),
+          $.expression
+        )
+      )
+    ),
+    eenum: $ => seq(
+      module_path($),
+      choice('.', terminated($.identifier, '::')),
+      field('variant', $.identifier),
+      optional(
+        parenthesed_rule(
+          non_empty_separated_rule(
+            ',',
+            $.expression
+          )
+        )
+      )
     ),
     ktype: $ => choice(
       seq(
@@ -345,6 +439,10 @@ function parenthesed_rule(rule) {
   return delimited('(', rule, ')')
 }
 
+function bracked_rule(rule) {
+  return delimited('{', rule, '}')
+}
+
 function separated_rule(sep, rule) {
   return optional(non_empty_separated_rule(sep, rule))
 }
@@ -360,6 +458,10 @@ function preceded(by, rule) {
 function non_empty_rule(rule) {
   return repeat1(rule)
 }
+
+// function splited(lrule, by, rule) {
+//   return seq(lrule, by, rule)
+// }
 
 function non_empty_separated_rule(sep, rule) {
   return seq(rule, repeat(seq(sep, rule)))

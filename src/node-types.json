@@ -15,6 +15,25 @@
     }
   },
   {
+    "type": "builin_function_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "const_decl",
     "named": true,
     "fields": {
@@ -148,6 +167,54 @@
     }
   },
   {
+    "type": "eenum",
+    "named": true,
+    "fields": {
+      "module_path": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          },
+          {
+            "type": "::",
+            "named": false
+          },
+          {
+            "type": "module_identifier",
+            "named": true
+          }
+        ]
+      },
+      "variant": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "enum_assoc",
     "named": true,
     "fields": {
@@ -226,23 +293,132 @@
     }
   },
   {
-    "type": "expression",
+    "type": "estruct",
     "named": true,
-    "fields": {},
+    "fields": {
+      "module_path": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          },
+          {
+            "type": "::",
+            "named": false
+          },
+          {
+            "type": "module_identifier",
+            "named": true
+          }
+        ]
+      },
+      "struct_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expression",
+    "named": true,
+    "fields": {
+      "bultin_function": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "builin_function_expr",
+            "named": true
+          }
+        ]
+      },
+      "integer_litteral": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "integer_literal",
+            "named": true
+          }
+        ]
+      },
+      "module_path": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          },
+          {
+            "type": "::",
+            "named": false
+          },
+          {
+            "type": "module_identifier",
+            "named": true
+          }
+        ]
+      },
+      "true": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "true",
+            "named": false
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "constant_identifier",
+          "named": true
+        },
+        {
+          "type": "eenum",
+          "named": true
+        },
+        {
+          "type": "estruct",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
         {
           "type": "float_litteral",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "function_call",
           "named": true
         },
         {
-          "type": "integer_literal",
+          "type": "identifier",
           "named": true
         },
         {
@@ -251,6 +427,10 @@
         },
         {
           "type": "stringl",
+          "named": true
+        },
+        {
+          "type": "unop",
           "named": true
         },
         {
@@ -349,6 +529,64 @@
         },
         {
           "type": "kbody",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "function_call",
+    "named": true,
+    "fields": {
+      "explicit_generic": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ", ",
+            "named": false
+          },
+          {
+            "type": "ktype",
+            "named": true
+          }
+        ]
+      },
+      "fn_call_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "module_path": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          },
+          {
+            "type": "::",
+            "named": false
+          },
+          {
+            "type": "module_identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
           "named": true
         }
       ]
@@ -754,6 +992,21 @@
     }
   },
   {
+    "type": "unop",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "while",
     "named": true,
     "fields": {},
@@ -773,6 +1026,14 @@
     }
   },
   {
+    "type": "!",
+    "named": false
+  },
+  {
+    "type": "!=",
+    "named": false
+  },
+  {
     "type": "\"",
     "named": false
   },
@@ -781,7 +1042,15 @@
     "named": false
   },
   {
+    "type": "%",
+    "named": false
+  },
+  {
     "type": "&",
+    "named": false
+  },
+  {
+    "type": "&&",
     "named": false
   },
   {
@@ -797,7 +1066,19 @@
     "named": false
   },
   {
+    "type": "+",
+    "named": false
+  },
+  {
     "type": ",",
+    "named": false
+  },
+  {
+    "type": ", ",
+    "named": false
+  },
+  {
+    "type": "-",
     "named": false
   },
   {
@@ -806,6 +1087,10 @@
   },
   {
     "type": "...",
+    "named": false
+  },
+  {
+    "type": "/",
     "named": false
   },
   {
@@ -825,7 +1110,19 @@
     "named": false
   },
   {
+    "type": "<<",
+    "named": false
+  },
+  {
+    "type": "<=",
+    "named": false
+  },
+  {
     "type": "=",
+    "named": false
+  },
+  {
+    "type": "==",
     "named": false
   },
   {
@@ -833,7 +1130,27 @@
     "named": false
   },
   {
+    "type": ">=",
+    "named": false
+  },
+  {
+    "type": ">>",
+    "named": false
+  },
+  {
+    "type": "@",
+    "named": false
+  },
+  {
+    "type": "^",
+    "named": false
+  },
+  {
     "type": "_",
+    "named": false
+  },
+  {
+    "type": "and",
     "named": false
   },
   {
@@ -893,6 +1210,10 @@
     "named": true
   },
   {
+    "type": "or",
+    "named": false
+  },
+  {
     "type": "sizeof",
     "named": false
   },
@@ -918,6 +1239,18 @@
   },
   {
     "type": "{",
+    "named": false
+  },
+  {
+    "type": "|",
+    "named": false
+  },
+  {
+    "type": "|>",
+    "named": false
+  },
+  {
+    "type": "||",
     "named": false
   },
   {

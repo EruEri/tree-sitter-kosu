@@ -13,5 +13,5 @@ fn test() s32 {
     discard while (true) {
         $ empty
     };
-    $ 10
+    $ .some(10)
 }
