@@ -34,6 +34,25 @@
     }
   },
   {
+    "type": "cases",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "kbody",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "const_decl",
     "named": true,
     "fields": {
@@ -394,6 +413,10 @@
       "required": false,
       "types": [
         {
+          "type": "cases",
+          "named": true
+        },
+        {
           "type": "constant_identifier",
           "named": true
         },
@@ -422,11 +445,19 @@
           "named": true
         },
         {
+          "type": "if",
+          "named": true
+        },
+        {
           "type": "sizeof",
           "named": true
         },
         {
           "type": "stringl",
+          "named": true
+        },
+        {
+          "type": "switch",
           "named": true
         },
         {
@@ -669,6 +700,25 @@
     }
   },
   {
+    "type": "if",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "kbody",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "kbody",
     "named": true,
     "fields": {},
@@ -835,6 +885,21 @@
     }
   },
   {
+    "type": "s_cases",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "sizeof",
     "named": true,
     "fields": {},
@@ -940,6 +1005,29 @@
       "types": [
         {
           "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "switch",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "kbody",
+          "named": true
+        },
+        {
+          "type": "s_cases",
           "named": true
         }
       ]
@@ -1126,6 +1214,10 @@
     "named": false
   },
   {
+    "type": "=>",
+    "named": false
+  },
+  {
     "type": ">",
     "named": false
   },
@@ -1154,6 +1246,10 @@
     "named": false
   },
   {
+    "type": "cases",
+    "named": false
+  },
+  {
     "type": "const",
     "named": false
   },
@@ -1163,6 +1259,10 @@
   },
   {
     "type": "discard",
+    "named": false
+  },
+  {
+    "type": "else",
     "named": false
   },
   {
@@ -1194,6 +1294,10 @@
     "named": true
   },
   {
+    "type": "if",
+    "named": false
+  },
+  {
     "type": "integer_literal",
     "named": true
   },
@@ -1203,6 +1307,10 @@
   },
   {
     "type": "nullptr",
+    "named": false
+  },
+  {
+    "type": "of",
     "named": false
   },
   {
@@ -1219,6 +1327,10 @@
   },
   {
     "type": "struct",
+    "named": false
+  },
+  {
+    "type": "switch",
     "named": false
   },
   {

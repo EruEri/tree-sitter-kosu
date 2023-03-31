@@ -10,8 +10,12 @@ struct coordinate {
 }
 
 fn test() s32 { 
-    discard while (true) {
-        $ empty
+    discard cases {
+        of 1 == 1 => { $ 10 }
+        else { $ 30 } 
     };
-    $ .some(10)
+    $ switch (expr) {
+        .some(x) => { $ x }
+        .none => { $ 10 }
+    }
 }

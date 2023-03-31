@@ -255,11 +255,15 @@ module.exports = grammar({
       $.stringl,
       $.sizeof,
       $.while,
+      $.if,
+      $.cases,
       $.unop,
       $.binop,
       $.function_call,
       $.estruct,
       $.eenum,
+      $.switch,
+      // parenthesed_rule(repeat($.expression)),
       seq(module_path($), $.identifier),
       seq(module_path($), $.constant_identifier),
       field('bultin_function', $.builin_function_expr),
@@ -278,10 +282,73 @@ module.exports = grammar({
         ),
       )
     ),
+    if: $ => seq(
+      'if',
+      parenthesed_rule($.expression),
+      $.kbody,
+      preceded('else', $.kbody)
+    ),
     while: $ => seq(
       'while',
       parenthesed_rule($.expression),
       $.kbody
+    ),
+    switch: $ => seq(
+      'switch',
+      parenthesed_rule($.expression),
+      bracked_rule(
+        seq(
+          non_empty_rule(
+            seq(
+              non_empty_separated_rule(
+                '|',
+                $.s_cases
+              ),
+              '=>',
+              $.kbody
+            )
+          ),
+          optional(
+            preceded(
+              '_',
+              preceded(
+                '=>',
+                $.kbody
+              )
+            )
+          )
+        )
+      )
+    ),
+    cases: $ => seq(
+      'cases',
+      bracked_rule(
+        seq(
+          non_empty_rule(
+            preceded(
+              'of', 
+              seq(
+                $.expression,
+                '=>',
+                $.kbody
+              )
+            )
+          ),
+          preceded('else', $.kbody)
+        )
+      )
+    ),
+    s_cases: $ => seq(
+      '.',
+      $.identifier,
+      optional(
+        parenthesed_rule(
+          non_empty_separated_rule(
+            ',',
+            $.identifier
+          )
+        )
+      )
     ),
     unop: $ => choice(
       prec.right(PREC.unot, preceded('-', $.expression)),
