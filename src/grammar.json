@@ -52,16 +52,20 @@
           }
         },
         {
+          "type": "FIELD",
+          "name": "const_decl",
+          "content": {
+            "type": "SYMBOL",
+            "name": "const_decl"
+          }
+        },
+        {
           "type": "SYMBOL",
           "name": "operator_decl"
         },
         {
           "type": "SYMBOL",
           "name": "function_decl"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "const_decl"
         }
       ]
     },
@@ -591,6 +595,56 @@
         }
       ]
     },
+    "const_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "const"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "constant_identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "integer_literal"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "stringl"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "float_litteral"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ";"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
     "operator_decl": {
       "type": "STRING",
       "value": "operator"
@@ -598,10 +652,6 @@
     "function_decl": {
       "type": "STRING",
       "value": "fn"
-    },
-    "const_decl": {
-      "type": "STRING",
-      "value": "const"
     },
     "enum_assoc": {
       "type": "SEQ",
@@ -985,9 +1035,64 @@
       "type": "PATTERN",
       "value": "[A-Z][A-Z | a-z | 0-9 | _]*"
     },
+    "constant_identifier": {
+      "type": "PATTERN",
+      "value": "[A-Z][A-Z | \"_\" | 0-9]*"
+    },
     "identifier": {
       "type": "PATTERN",
       "value": "[a-z|_][a-z|_|A-Z|0-9]*"
+    },
+    "float_litteral": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "PATTERN",
+            "value": "[0-9][0-9 | _]*"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "."
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[0-9| _]*"
+                  }
+                ]
+              },
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "[e|E]"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[+|-]"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[0-9 | _]*"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "digit": {
+      "type": "PATTERN",
+      "value": "[0-9]"
     },
     "integer_literal": {
       "type": "TOKEN",

@@ -19,9 +19,9 @@ module.exports = grammar({
       field('struct_decl', $.struct_decl),
       field('external_fn_decl', $.external_func_decl),
       field('syscall_decl', $.syscall_decl),
+      field('const_decl', $.const_decl),
       $.operator_decl,
       $.function_decl,
-      $.const_decl
     ),
     enum_decl: $ => seq(
       'enum',
@@ -123,9 +123,19 @@ module.exports = grammar({
       field('opcode', $.integer_literal),
       optional(';')
     ),
+    const_decl: $ => seq(
+      'const',
+      field('name', $.constant_identifier),
+      '=',
+      choice(
+        $.integer_literal,
+        $.stringl,
+        $.float_litteral
+      ),
+      optional(';')
+    ),
     operator_decl: $ => "operator",
     function_decl: $ => "fn",
-    const_decl: $ => "const",
     enum_assoc: $ => seq(
       field(
         'enum_case_decl',
@@ -172,7 +182,18 @@ module.exports = grammar({
     stringl: $ => delimited('\"', $._stringl, '\"'),
     generic_list: $ => non_empty_separated_rule(",", $.identifier),
     module_identifier: $ => /[A-Z][A-Z | a-z | 0-9 | _]*/,
+    constant_identifier: $ => /[A-Z][A-Z | "_" | 0-9]*/,
     identifier: $ => /[a-z|_][a-z|_|A-Z|0-9]*/,
+    float_litteral: $ => token(
+      seq(
+        /[0-9][0-9 | _]*/,
+        choice(
+          seq('.',  /[0-9| _]*/),
+          seq(/[e|E]/, /[+|-]/, /[0-9 | _]*/)
+        )
+      )
+    ),
+    digit: $ => /[0-9]/,
     integer_literal: $ => token(
       choice(
         /[0-9][0-9_]*/,

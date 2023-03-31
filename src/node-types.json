@@ -1,5 +1,39 @@
 [
   {
+    "type": "const_decl",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "constant_identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "float_litteral",
+          "named": true
+        },
+        {
+          "type": "integer_literal",
+          "named": true
+        },
+        {
+          "type": "stringl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "ctype",
     "named": true,
     "fields": {
@@ -256,6 +290,16 @@
     "type": "module_nodes",
     "named": true,
     "fields": {
+      "const_decl": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "const_decl",
+            "named": true
+          }
+        ]
+      },
       "enum_decl": {
         "multiple": false,
         "required": false,
@@ -301,10 +345,6 @@
       "multiple": false,
       "required": false,
       "types": [
-        {
-          "type": "const_decl",
-          "named": true
-        },
         {
           "type": "function_decl",
           "named": true
@@ -476,7 +516,11 @@
     "named": false
   },
   {
-    "type": "const_decl",
+    "type": "const",
+    "named": false
+  },
+  {
+    "type": "constant_identifier",
     "named": true
   },
   {
@@ -486,6 +530,10 @@
   {
     "type": "external",
     "named": false
+  },
+  {
+    "type": "float_litteral",
+    "named": true
   },
   {
     "type": "function_decl",
