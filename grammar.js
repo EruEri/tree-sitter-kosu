@@ -20,8 +20,8 @@ module.exports = grammar({
       field('external_fn_decl', $.external_func_decl),
       field('syscall_decl', $.syscall_decl),
       field('const_decl', $.const_decl),
+      field('function_decl', $.function_decl),
       $.operator_decl,
-      $.function_decl,
     ),
     enum_decl: $ => seq(
       'enum',
@@ -70,14 +70,14 @@ module.exports = grammar({
             )
           ),
           optional(
-            preceded( '=',
+            preceded('=',
               field(
                 'variadic',
                 '...'
               )
             )
           )
-          ),
+        ),
         ')'
       ),
       optional(
@@ -135,7 +135,36 @@ module.exports = grammar({
       optional(';')
     ),
     operator_decl: $ => "operator",
-    function_decl: $ => "fn",
+    function_decl: $ => seq(
+      "fn",
+      field('name', $.identifier),
+      optional(
+        field(
+          'parametric_type',
+          delimited(
+            '<',
+            non_empty_separated_rule(',', $.identifier),
+            '>'
+          )
+        )
+      ),
+      delimited(
+        '(',
+        separated_rule(
+          ',',
+          field('arg', seq(
+            $.identifier,
+            ':',
+            $.ktype
+          ))
+        ),
+        ')'
+      ),
+      optional(
+        field('return_type', $.ktype)
+      ),
+      $.fun_kbody
+    ),
     enum_assoc: $ => seq(
       field(
         'enum_case_decl',
@@ -151,6 +180,53 @@ module.exports = grammar({
           ')'
         )
       )
+    ),
+    fun_kbody: $ => choice(
+      seq('=', $.expression, optional(';')),
+      $.kbody
+    ),
+    kbody: $ => delimited(
+      '{',
+      seq(
+        field('statements', seq($.statement)),
+        '$',
+        field('final_expression', $.expression)
+      ),
+      '}'
+    ),
+    statement: $ => choice(
+      $.declaration,
+      $.reaffectation,
+      $.deref_affect,
+      seq(
+        'discard', $.expression, ';'
+      )
+    ),
+    declaration: $ => seq(
+      choice('var', 'const'),
+      field('variable', $.identifier),
+      optional(
+        preceded(
+          ':',
+          field('explicit_type', $.ktype)
+        )
+      ),
+      '=',
+      $.expression,
+      ';'
+    ),
+    reaffectation: $ => seq(
+      $.affected_value,
+      '=',
+      $.expression,
+      ';'
+    ),
+    deref_affect: $ => preceded('*', $.affected_value),
+    affected_value: $ => non_empty_separated_rule('.', $.identifier),
+    expression: $ => choice(
+      $.integer_literal,
+      $.float_litteral,
+      $.stringl
     ),
     ktype: $ => choice(
       seq(
@@ -188,7 +264,7 @@ module.exports = grammar({
       seq(
         /[0-9][0-9 | _]*/,
         choice(
-          seq('.',  /[0-9| _]*/),
+          seq('.', /[0-9| _]*/),
           seq(/[e|E]/, /[+|-]/, /[0-9 | _]*/)
         )
       )
