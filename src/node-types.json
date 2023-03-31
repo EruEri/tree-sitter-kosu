@@ -231,10 +231,14 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "float_litteral",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         },
         {
@@ -242,7 +246,15 @@
           "named": true
         },
         {
+          "type": "sizeof",
+          "named": true
+        },
+        {
           "type": "stringl",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
@@ -421,27 +433,20 @@
   {
     "type": "kbody",
     "named": true,
-    "fields": {
-      "final_expression": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
-      "statements": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "statement",
-            "named": true
-          }
-        ]
-      }
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -592,6 +597,25 @@
     }
   },
   {
+    "type": "sizeof",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "ktype",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {
@@ -730,11 +754,34 @@
     }
   },
   {
+    "type": "while",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "kbody",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "\"",
     "named": false
   },
   {
     "type": "$",
+    "named": false
+  },
+  {
+    "type": "&",
     "named": false
   },
   {
@@ -802,11 +849,19 @@
     "named": false
   },
   {
+    "type": "empty",
+    "named": false
+  },
+  {
     "type": "enum",
     "named": false
   },
   {
     "type": "external",
+    "named": false
+  },
+  {
+    "type": "false",
     "named": false
   },
   {
@@ -830,8 +885,16 @@
     "named": true
   },
   {
+    "type": "nullptr",
+    "named": false
+  },
+  {
     "type": "operator_decl",
     "named": true
+  },
+  {
+    "type": "sizeof",
+    "named": false
   },
   {
     "type": "struct",
@@ -842,7 +905,15 @@
     "named": false
   },
   {
+    "type": "true",
+    "named": false
+  },
+  {
     "type": "var",
+    "named": false
+  },
+  {
+    "type": "while",
     "named": false
   },
   {

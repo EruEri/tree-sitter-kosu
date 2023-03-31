@@ -8,3 +8,10 @@ struct coordinate {
     x: f64,
     y: f64
 }
+
+fn test() s32 { 
+    discard while (true) {
+        $ empty
+    };
+    $ 10
+}

@@ -1,5 +1,32 @@
+const PREC = {
+  pipesup: 0,
+  or: 1,
+  fullor: 1,
+  and: 2,
+  fulland: 2,
+  pipe: 3,
+  xor: 4,
+  ampersand: 5,
+  doubleequal: 6,
+  diff: 6,
+  sup: 7,
+  supeq: 7,
+  inf: 7,
+  infeq: 7,
+  shiftleft: 8,
+  shiftright: 8,
+  plus: 9,
+  minus: 9,
+  mult: 10,
+  div: 10,
+  mod: 10,
+  uminus: 11,
+  unot: 11,
+  dot: 12
+}
+
 module.exports = grammar({
-  name: 'Kosu',
+  name: 'kosu',
 
   externals: $ => [
     $._stringl
@@ -29,7 +56,7 @@ module.exports = grammar({
       optional(
         field(
           'parametric_type',
-          delimited('(', non_empty_separated_rule(',', $.identifier), ')')
+          parenthesed_rule(non_empty_separated_rule(',', $.identifier))
         )
       ),
       delimited('{', separated_rule(',', field('enum_cases', $.enum_assoc)), '}')
@@ -39,7 +66,7 @@ module.exports = grammar({
       'struct',
       field('name', $.identifier),
       optional(
-        delimited('(', non_empty_separated_rule(',', $.identifier), ')')
+        parenthesed_rule(non_empty_separated_rule(',', $.identifier))
       ),
       delimited(
         '{',
@@ -59,8 +86,7 @@ module.exports = grammar({
     external_func_decl: $ => seq(
       'external',
       field('external_fn_name', $.identifier),
-      delimited(
-        '(',
+      parenthesed_rule(
         seq(
           separated_rule(
             ',',
@@ -77,8 +103,7 @@ module.exports = grammar({
               )
             )
           )
-        ),
-        ')'
+        )
       ),
       optional(
         field(
@@ -102,16 +127,14 @@ module.exports = grammar({
     syscall_decl: $ => seq(
       "syscall",
       field('name', $.identifier),
-      delimited(
-        '(',
+      parenthesed_rule(
         separated_rule(
           ',',
           field(
             'args',
             $.external_fn_arg
           )
-        ),
-        ')'
+        )
       ),
       optional(
         field(
@@ -148,17 +171,18 @@ module.exports = grammar({
           )
         )
       ),
-      delimited(
-        '(',
+      parenthesed_rule(
         separated_rule(
           ',',
-          field('arg', seq(
-            $.identifier,
-            ':',
-            $.ktype
-          ))
-        ),
-        ')'
+          field(
+            'arg',
+            seq(
+              $.identifier,
+              ':',
+              $.ktype
+            )
+          )
+        )
       ),
       optional(
         field('return_type', $.ktype)
@@ -171,13 +195,11 @@ module.exports = grammar({
         $.identifier
       ),
       optional(
-        delimited(
-          '(',
+        parenthesed_rule(
           field(
             'assoc_type',
             non_empty_separated_rule(',', $.ktype)
-          ),
-          ')'
+          )
         )
       )
     ),
@@ -188,9 +210,8 @@ module.exports = grammar({
     kbody: $ => delimited(
       '{',
       seq(
-        field('statements', seq($.statement)),
-        '$',
-        field('final_expression', $.expression)
+        repeat($.statement),
+        '$', $.expression
       ),
       '}'
     ),
@@ -224,9 +245,32 @@ module.exports = grammar({
     deref_affect: $ => preceded('*', $.affected_value),
     affected_value: $ => non_empty_separated_rule('.', $.identifier),
     expression: $ => choice(
+      'true',
+      'false',
+      'empty',
+      'nullptr',
       $.integer_literal,
       $.float_litteral,
-      $.stringl
+      $.stringl,
+      $.sizeof,
+      $.while,
+      seq(non_empty_rule('*'), $.identifier),
+      preceded('&', $.identifier),
+
+    ),
+    sizeof: $ => seq(
+      'sizeof',
+      parenthesed_rule(
+        choice(
+          preceded(':', $.expression),
+          $.ktype
+        ),
+      )
+    ),
+    while: $ => seq(
+      'while',
+      parenthesed_rule($.expression),
+      $.kbody
     ),
     ktype: $ => choice(
       seq(
@@ -237,7 +281,7 @@ module.exports = grammar({
       seq(
         module_path($),
         $.identifier,
-        delimited('(', non_empty_separated_rule(',', $.ktype), ')')
+        parenthesed_rule(non_empty_separated_rule(',', $.ktype))
       )
     ),
     ctype: $ => choice(
@@ -297,6 +341,10 @@ function delimited(lhs, rule, rhs) {
   return seq(lhs, rule, rhs)
 }
 
+function parenthesed_rule(rule) {
+  return delimited('(', rule, ')')
+}
+
 function separated_rule(sep, rule) {
   return optional(non_empty_separated_rule(sep, rule))
 }
@@ -307,6 +355,10 @@ function terminated(rule, by) {
 
 function preceded(by, rule) {
   return seq(by, rule)
+}
+
+function non_empty_rule(rule) {
+  return repeat1(rule)
 }
 
 function non_empty_separated_rule(sep, rule) {
