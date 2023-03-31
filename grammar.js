@@ -25,6 +25,21 @@ const PREC = {
   dot: 12
 }
 
+const numeric_type = [
+  'u8',
+  's8',
+  'u16',
+  's16',
+  'u32',
+  's32',
+  'u64',
+  's64',
+  'f32',
+  'f64'
+]
+
+const builtin_types = numeric_type.concat('bool', 'stringl', 'anyptr', 'char')
+
 module.exports = grammar({
   name: 'kosu',
 
@@ -67,7 +82,10 @@ module.exports = grammar({
       'struct',
       field('name', $.identifier),
       optional(
-        parenthesed_rule(non_empty_separated_rule(',', $.identifier))
+        field(
+          'parametric_type',
+          parenthesed_rule(non_empty_separated_rule(',', $.identifier))
+        )
       ),
       delimited(
         '{',
@@ -263,7 +281,7 @@ module.exports = grammar({
       $.estruct,
       $.eenum,
       $.switch,
-      // parenthesed_rule(repeat($.expression)),
+      parenthesed_rule(separated_rule(', ', $.expression)),
       seq(module_path($), $.identifier),
       seq(module_path($), $.constant_identifier),
       field('bultin_function', $.builin_function_expr),
@@ -326,7 +344,7 @@ module.exports = grammar({
         seq(
           non_empty_rule(
             preceded(
-              'of', 
+              'of',
               seq(
                 $.expression,
                 '=>',
@@ -355,29 +373,29 @@ module.exports = grammar({
       prec.right(PREC.unot, preceded('!', $.expression))
     ),
     binop: $ => choice(
-      prec.left(PREC.plus, seq($.expression, token('+'), $.expression) ),
-      prec.left(PREC.minus, seq($.expression, token('-'), $.expression) ),
-      prec.left(PREC.div, seq($.expression, token('/'), $.expression) ),
-      prec.left(PREC.mod, seq($.expression, token('%'), $.expression) ),
-      prec.left(PREC.pipe, seq($.expression, token('|'), $.expression) ),
-      prec.left(PREC.xor, seq($.expression, token('^'), $.expression) ),
-      prec.left(PREC.ampersand, seq($.expression, token('&'), $.expression) ),
-      prec.left(PREC.shiftleft, seq($.expression, token('<<'), $.expression) ),
-      prec.left(PREC.shiftright, seq($.expression, token('>>'), $.expression) ),
-      prec.left(PREC.fullor, seq($.expression, token('or'), $.expression) ),
-      prec.left(PREC.fulland, seq($.expression, token('and'), $.expression) ),
-      prec.left(PREC.and, seq($.expression, token('&&'), $.expression) ),
-      prec.left(PREC.or, seq($.expression, token('||'), $.expression) ),
-      prec.left(PREC.sup, seq($.expression, token('>'), $.expression) ),
-      prec.left(PREC.supeq, seq($.expression, token('>='), $.expression) ),
-      prec.left(PREC.inf, seq($.expression, token('<'), $.expression) ),
-      prec.left(PREC.infeq, seq($.expression, token('<='), $.expression) ),
-      prec.left(PREC.doubleequal, seq($.expression, token('=='), $.expression) ),
-      prec.left(PREC.diff, seq($.expression, token('!='), $.expression) ),
+      prec.left(PREC.plus, seq($.expression, token('+'), $.expression)),
+      prec.left(PREC.minus, seq($.expression, token('-'), $.expression)),
+      prec.left(PREC.div, seq($.expression, token('/'), $.expression)),
+      prec.left(PREC.mod, seq($.expression, token('%'), $.expression)),
+      prec.left(PREC.pipe, seq($.expression, token('|'), $.expression)),
+      prec.left(PREC.xor, seq($.expression, token('^'), $.expression)),
+      prec.left(PREC.ampersand, seq($.expression, token('&'), $.expression)),
+      prec.left(PREC.shiftleft, seq($.expression, token('<<'), $.expression)),
+      prec.left(PREC.shiftright, seq($.expression, token('>>'), $.expression)),
+      prec.left(PREC.fullor, seq($.expression, token('or'), $.expression)),
+      prec.left(PREC.fulland, seq($.expression, token('and'), $.expression)),
+      prec.left(PREC.and, seq($.expression, token('&&'), $.expression)),
+      prec.left(PREC.or, seq($.expression, token('||'), $.expression)),
+      prec.left(PREC.sup, seq($.expression, token('>'), $.expression)),
+      prec.left(PREC.supeq, seq($.expression, token('>='), $.expression)),
+      prec.left(PREC.inf, seq($.expression, token('<'), $.expression)),
+      prec.left(PREC.infeq, seq($.expression, token('<='), $.expression)),
+      prec.left(PREC.doubleequal, seq($.expression, token('=='), $.expression)),
+      prec.left(PREC.diff, seq($.expression, token('!='), $.expression)),
       prec.left(PREC.pipesup, seq($.expression, token('|>', $.function_call)))
     ),
     builin_function_expr: $ => seq(
-      preceded('@', $.identifier),
+      field('name', preceded('@', $.identifier)),
       parenthesed_rule(
         separated_rule(
           ',',
@@ -434,16 +452,21 @@ module.exports = grammar({
       )
     ),
     ktype: $ => choice(
-      seq(
-        module_path($),
-        $.identifier
+      field('type_identifier', 
+        seq(
+          module_path($),
+          $.identifier
+        )
       ),
       field('pointer', seq("*", $.ktype)),
-      seq(
-        module_path($),
-        $.identifier,
-        parenthesed_rule(non_empty_separated_rule(',', $.ktype))
-      )
+      field('parametric_type',
+        seq(
+          module_path($),
+          $.identifier,
+          parenthesed_rule(non_empty_separated_rule(',', $.ktype))
+        )
+      ),
+      parenthesed_rule(separated_rule(',', $.ktype))
     ),
     ctype: $ => choice(
       seq(
